@@ -3,75 +3,251 @@ import 'package:flutter/material.dart';
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
+  // Personal Information
   final String npm = "2506619285";
   final String nama = "Raffa Zia Arya Putra";
   final String kelas = "PBP A";
 
+  // Quick Actions
   final List<ItemHomepage> items = [
-    ItemHomepage("Lihat Proyek", Icons.folder),
-    ItemHomepage("Tambah Proyek", Icons.add_circle),
-    ItemHomepage("Logout", Icons.logout),
+    ItemHomepage("View Portfolio", Icons.folder_open, const Color(0xFF3979B9)),
+    ItemHomepage(
+      "Add Portfolio Item",
+      Icons.add_circle_outline,
+      const Color(0xFF269B72),
+    ),
+    ItemHomepage("Logout", Icons.logout, const Color(0xFFD85B55)),
   ];
 
   @override
   Widget build(BuildContext context) {
-    // Scaffold menyediakan struktur visual dasar halaman (AppBar, Body, SnackBar).
+    const navy = Color(0xFF384959);
+
     return Scaffold(
-      // AppBar menampilkan bar bagian atas halaman aplikasi.
+      // AppBar
       appBar: AppBar(
-        title: const Text(
-          'MyPortfolio',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-      // Body halaman utama dengan padding di sekelilingnya.
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        title: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Baris horizontal untuk menampilkan 3 InfoCard secara sejajar.
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InfoCard(title: 'NPM', content: npm),
-                InfoCard(title: 'Name', content: nama),
-                InfoCard(title: 'Class', content: kelas),
-              ],
+            Text(
+              'MyPortfolio',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
+            Text('HOME', style: TextStyle(fontSize: 11)),
+          ],
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications_none),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: CircleAvatar(
+              radius: 19,
+              backgroundColor: Color(0xFFDCEBFA),
+              child: Icon(Icons.person, color: navy),
+            ),
+          ),
+        ],
+      ),
 
-            const SizedBox(height: 16.0),
-
-            // Bagian tengah: pesan sambutan dan kisi tombol menu portofolio.
-            Center(
+      // Main Body
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Welcome Section
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: navy.withValues(alpha: 0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      'Selamat datang di MyPortfolio Mobile!',
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDCEBFA),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      'INFORMATION SYSTEMS',
                       style: TextStyle(
+                        color: navy,
+                        fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
                       ),
                     ),
                   ),
 
-                  // GridView menampilkan kartu tombol dalam tata letak kisi 3 kolom.
-                  GridView.count(
-                    primary: true,
-                    padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 3,
-                    // shrinkWrap agar ukuran kisi menyesuaikan tinggi konten anak.
-                    shrinkWrap: true,
-                    children: items.map((ItemHomepage item) {
-                      return ItemCard(item);
-                    }).toList(),
+                  const SizedBox(height: 14),
+
+                  const Text(
+                    'Hello, Raffa!',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: navy,
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  const Text(
+                    'Welcome to my personal portfolio.',
+                    style: TextStyle(fontSize: 14, color: Color(0xFF718096)),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  const Row(
+                    children: [
+                      Icon(
+                        Icons.school_outlined,
+                        color: Color(0xFF3979B9),
+                        size: 19,
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Undergraduate Information Systems',
+                          style: TextStyle(fontSize: 12, color: navy),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Personal Information
+            Row(
+              children: [
+                Expanded(
+                  child: InfoCard(
+                    title: 'NPM',
+                    content: npm,
+                    icon: Icons.badge_outlined,
+                  ),
+                ),
+                Expanded(
+                  child: InfoCard(
+                    title: 'NAME',
+                    content: nama,
+                    icon: Icons.person_outline,
+                  ),
+                ),
+                Expanded(
+                  child: InfoCard(
+                    title: 'CLASS',
+                    content: kelas,
+                    icon: Icons.account_tree_outlined,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 28),
+
+            // Quick Actions
+            const Text(
+              'QUICK ACTIONS',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: navy,
+                letterSpacing: 1,
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            GridView.count(
+              crossAxisCount: 1,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 3.5,
+              children: items.map((item) {
+                return ItemCard(item);
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Reusable Widget: InfoCard
+class InfoCard extends StatelessWidget {
+  final String title;
+  final String content;
+  final IconData icon;
+
+  const InfoCard({
+    super.key,
+    required this.title,
+    required this.content,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const navy = Color(0xFF384959);
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 5),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 20,
+              backgroundColor: const Color(0xFFDCEBFA),
+              child: Icon(icon, color: navy, size: 21),
+            ),
+
+            const SizedBox(height: 9),
+
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF718096),
+              ),
+            ),
+
+            const SizedBox(height: 4),
+
+            Text(
+              content,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: navy,
               ),
             ),
           ],
@@ -81,37 +257,16 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class InfoCard extends StatelessWidget {
-  final String title;
-  final String content;
-
-  const InfoCard({super.key, required this.title, required this.content});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2.0,
-      child: Container(
-        width: MediaQuery.of(context).size.width / 3.5,
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8.0),
-            Text(content),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
+// Model Data: ItemHomepage
 class ItemHomepage {
   final String name;
   final IconData icon;
-  ItemHomepage(this.name, this.icon);
+  final Color color;
+
+  ItemHomepage(this.name, this.icon, this.color);
 }
 
+// Reusable Widget: ItemCard
 class ItemCard extends StatelessWidget {
   final ItemHomepage item;
 
@@ -119,37 +274,77 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const navy = Color(0xFF384959);
+
     return Material(
-      // Menggunakan warna sekunder dari skema tema aplikasi.
-      color: Theme.of(context).colorScheme.secondary,
-      borderRadius: BorderRadius.circular(12),
+      // Background color berbeda untuk setiap ItemCard
+      color: item.color,
+      borderRadius: BorderRadius.circular(16),
+      elevation: 1,
       child: InkWell(
-        // Aksi ketika kartu ditekan oleh pengguna.
+        borderRadius: BorderRadius.circular(16),
         onTap: () {
-          // Menampilkan SnackBar dengan pesan interaktif.
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text("Kamu telah menekan tombol ${item.name}!"),
+                content: Text('Kamu telah menekan tombol ${item.name}!'),
+                backgroundColor: navy,
+                behavior: SnackBarBehavior.floating,
               ),
             );
         },
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(item.icon, color: Colors.white, size: 30.0),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              // Icon
+              Icon(item.icon, color: Colors.white, size: 28),
+
+              const SizedBox(width: 14),
+
+              // Action Title and Description
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      item.name == "View Portfolio"
+                          ? "Explore records & achievements"
+                          : item.name == "Add Portfolio Item"
+                          ? "Create a new portfolio item"
+                          : "End current mobile session",
+                      style: const TextStyle(color: Colors.white, fontSize: 11),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+
+              const SizedBox(width: 8),
+
+              // Arrow Indicator
+              CircleAvatar(
+                radius: 17,
+                backgroundColor: Colors.white.withValues(alpha: 0.2),
+                child: const Icon(
+                  Icons.chevron_right,
+                  color: Colors.white,
+                  size: 22,
+                ),
+              ),
+            ],
           ),
         ),
       ),
