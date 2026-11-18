@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/widgets/left_drawer.dart';
+import 'package:myportofolio_mobile/widgets/project_card.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -10,9 +12,9 @@ class MyHomePage extends StatelessWidget {
 
   // Quick Actions
   final List<ItemHomepage> items = [
-    ItemHomepage("View Portfolio", Icons.folder_open, const Color(0xFF3979B9)),
+    ItemHomepage("View Portofolio", Icons.folder_open, const Color(0xFF3979B9)),
     ItemHomepage(
-      "Add Portfolio Item",
+      "Add Portofolio Item",
       Icons.add_circle_outline,
       const Color(0xFF269B72),
     ),
@@ -24,13 +26,14 @@ class MyHomePage extends StatelessWidget {
     const navy = Color(0xFF384959);
 
     return Scaffold(
+      drawer: const LeftDrawer(),
       // AppBar
       appBar: AppBar(
         title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'MyPortfolio',
+              'MyPortofolio',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             Text('HOME', style: TextStyle(fontSize: 11)),
@@ -109,7 +112,7 @@ class MyHomePage extends StatelessWidget {
                   const SizedBox(height: 6),
 
                   const Text(
-                    'Welcome to my personal portfolio.',
+                    'Welcome to my personal portofolio.',
                     style: TextStyle(fontSize: 14, color: Color(0xFF718096)),
                   ),
 
@@ -264,90 +267,4 @@ class ItemHomepage {
   final Color color;
 
   ItemHomepage(this.name, this.icon, this.color);
-}
-
-// Reusable Widget: ItemCard
-class ItemCard extends StatelessWidget {
-  final ItemHomepage item;
-
-  const ItemCard(this.item, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    const navy = Color(0xFF384959);
-
-    return Material(
-      // Background color berbeda untuk setiap ItemCard
-      color: item.color,
-      borderRadius: BorderRadius.circular(16),
-      elevation: 1,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: () {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text('Kamu telah menekan tombol ${item.name}!'),
-                backgroundColor: navy,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            children: [
-              // Icon
-              Icon(item.icon, color: Colors.white, size: 28),
-
-              const SizedBox(width: 14),
-
-              // Action Title and Description
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      item.name == "View Portfolio"
-                          ? "Explore records & achievements"
-                          : item.name == "Add Portfolio Item"
-                          ? "Create a new portfolio item"
-                          : "End current mobile session",
-                      style: const TextStyle(color: Colors.white, fontSize: 11),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(width: 8),
-
-              // Arrow Indicator
-              CircleAvatar(
-                radius: 17,
-                backgroundColor: Colors.white.withValues(alpha: 0.2),
-                child: const Icon(
-                  Icons.chevron_right,
-                  color: Colors.white,
-                  size: 22,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
