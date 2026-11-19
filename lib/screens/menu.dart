@@ -18,6 +18,7 @@ class MyHomePage extends StatelessWidget {
       Icons.add_circle_outline,
       const Color(0xFF269B72),
     ),
+    ItemHomepage("Add Experience", Icons.work_outline, const Color(0xFF3979B9)),
     ItemHomepage("Logout", Icons.logout, const Color(0xFFD85B55)),
   ];
 

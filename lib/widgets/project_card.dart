@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
+import 'package:myportofolio_mobile/screens/experience_form.dart';
 
 class ItemCard extends StatelessWidget {
   final ItemHomepage item;
@@ -29,10 +30,19 @@ class ItemCard extends StatelessWidget {
               ),
             );
 
-          if (item.name == "Add Portfolio Item") {
+          if (item.name == "Add Portofolio Item") {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const ProjectFormPage()),
+            );
+          }
+
+          if (item.name == "Add Experience") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ExperienceFormPage(),
+              ),
             );
           }
         },
@@ -61,10 +71,12 @@ class ItemCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      item.name == "View Portfolio"
+                      item.name == "View Portofolio"
                           ? "Explore records & achievements"
-                          : item.name == "Add Portfolio Item"
-                          ? "Create a new portfolio item"
+                          : item.name == "Add Portofolio Item"
+                          ? "Create a new portofolio item"
+                          : item.name == "Add Experience"
+                          ? "Add a new experience to yout portofolio"
                           : "End current mobile session",
                       style: const TextStyle(color: Colors.white, fontSize: 11),
                       maxLines: 1,

@@ -207,3 +207,112 @@ Bantuan AI digunakan dalam beberapa bagian, antara lain:
 Seluruh saran dan kode yang dihasilkan AI ditinjau kembali dan disesuaikan dengan kebutuhan proyek serta instruksi Individual Assignment 7. Saya tetap bertanggung jawab untuk memahami implementasi, melakukan perubahan, dan memeriksa hasil aplikasi secara mandiri.
 
 AI digunakan sebagai alat bantu pembelajaran dan pengembangan, bukan sebagai pengganti pemahaman terhadap materi yang dipelajari.
+
+
+### Tugas 8
+
+1. **Jelaskan perbedaan antara `Navigator.push()`, `Navigator.pushReplacement()`, dan `Navigator.pop()`. Metode apa yang digunakan untuk membuka formulir dari kartu aksi? Jelaskan juga bagaimana opsi Home di drawer membawa pengguna kembali ke halaman utama.**
+
+   `Navigator.push()` digunakan untuk membuka halaman baru dengan menambahkannya ke navigation stack tanpa menghapus halaman sebelumnya. Dengan demikian, pengguna masih dapat kembali ke halaman sebelumnya menggunakan tombol Back.
+
+   `Navigator.pushReplacement()` digunakan untuk membuka halaman baru sekaligus menggantikan halaman yang sedang aktif. Halaman sebelumnya dihapus dari navigation stack sehingga pengguna tidak kembali ke halaman tersebut melalui tombol Back.
+
+   Sementara itu, `Navigator.pop()` digunakan untuk menutup halaman atau dialog yang sedang aktif dan kembali ke halaman sebelumnya dalam navigation stack.
+
+   Pada aplikasi saya, `Navigator.push()` digunakan ketika pengguna menekan kartu aksi **Add Experience** di halaman Home untuk membuka `ExperienceFormPage`. Saya memilih metode ini agar pengguna dapat kembali ke halaman Home menggunakan tombol Back.
+
+   Untuk navigasi melalui Drawer, saya menggunakan `Navigator.pushReplacement()` pada opsi Home. Metode ini menggantikan halaman formulir yang sedang dibuka dengan `MyHomePage`, sehingga pengguna dapat kembali ke halaman utama tanpa menumpuk halaman sebelumnya.
+
+2. **Bagaimana susunan `Scaffold`, `AppBar`, dan `Drawer` membantu menjaga struktur halaman tetap konsisten? Berikan satu contoh penggunaan warna tema portofolio di lebih dari satu halaman.**
+
+   `Scaffold` berfungsi sebagai kerangka utama halaman Flutter yang menyediakan struktur seperti `AppBar`, `Drawer`, dan `body`. Dengan menggunakan `Scaffold`, setiap halaman memiliki susunan komponen yang lebih terorganisasi.
+
+   `AppBar` digunakan untuk menampilkan bagian atas halaman, seperti judul halaman dan tombol navigasi. Sementara itu, `Drawer` menyediakan menu navigasi yang dapat digunakan untuk berpindah antarhalaman.
+
+   Pada aplikasi saya, `LeftDrawer` dibuat sebagai reusable widget sehingga dapat digunakan kembali pada halaman Home, Project Form, dan Experience Form. Hal ini membantu menjaga navigasi tetap konsisten dan menghindari penulisan kode Drawer berulang kali.
+
+   Saya juga menggunakan warna navy (`Color(0xFF384959)`) sebagai warna utama portofolio. Warna tersebut digunakan pada Drawer Header, AppBar Experience Form, serta beberapa elemen teks dan komponen antarmuka di halaman Home. Dengan demikian, tampilan antarhalaman tetap memiliki identitas visual yang konsisten.
+
+3. **Mengapa tempat letak tersebut dipilih untuk formulir? Jelaskan peran widget pengatur jarak dan widget penggulung ketika ruang layar terbatas.**
+
+   Saya memilih untuk menyusun formulir secara vertikal menggunakan `Column` karena susunan tersebut membuat setiap input mudah dibaca dan diisi secara berurutan. Formulir juga menggunakan `Padding` untuk memberikan jarak antara komponen dengan tepi layar agar tampilannya lebih rapi dan nyaman digunakan.
+
+   Widget `SizedBox` digunakan untuk memberikan jarak antarbagian formulir, seperti antara Title, Description, Category, dan Thumbnail. Dengan pengaturan jarak tersebut, setiap input memiliki ruang yang cukup dan tidak terlihat terlalu berdekatan.
+
+   Selain itu, saya menggunakan `SingleChildScrollView` agar seluruh isi formulir tetap dapat diakses ketika tinggi layar terbatas atau ketika keyboard muncul. Tanpa widget tersebut, beberapa komponen seperti tombol Save Experience berpotensi tidak terlihat dan sulit dijangkau oleh pengguna.
+
+4. **Apa peran `GlobalKey<FormState>`, `validator`, dan `validate()` saat tombol Simpan ditekan? Berikan satu contoh nilai yang ditolak oleh validasi dan jelaskan mengapa memilih jenis input atau papan ketik saja belum cukup.**
+
+   `GlobalKey<FormState>` digunakan untuk memperoleh akses terhadap state dari widget `Form`. Melalui key tersebut, aplikasi dapat menjalankan proses validasi terhadap seluruh input yang berada di dalam formulir.
+
+   `validator` merupakan fungsi yang digunakan untuk menentukan apakah nilai yang dimasukkan pengguna sudah memenuhi aturan tertentu. Jika input tidak valid, fungsi tersebut akan mengembalikan pesan kesalahan. Sebaliknya, jika input valid, fungsi akan mengembalikan `null`.
+
+   Sementara itu, `validate()` digunakan untuk menjalankan seluruh fungsi validator ketika pengguna menekan tombol Save Experience. Apabila terdapat input yang tidak valid, proses penyimpanan tidak dilanjutkan dan pesan kesalahan ditampilkan pada field terkait.
+
+   Contohnya, pada field Title, input yang hanya berisi spasi seperti `"     "` akan ditolak karena setelah menggunakan `.trim()`, nilainya menjadi kosong. Pada field Thumbnail, URL seperti `"gambar-saya"` juga ditolak karena tidak menggunakan skema HTTP atau HTTPS dan tidak memiliki host yang valid.
+
+   Memilih jenis input atau keyboard saja belum cukup untuk menjamin validitas data. Misalnya, `TextInputType.url` hanya membantu menampilkan keyboard yang sesuai untuk memasukkan URL, tetapi tidak menjamin bahwa URL yang dimasukkan benar-benar valid. Oleh karena itu, validasi tetap diperlukan untuk memastikan data memenuhi aturan yang ditentukan sebelum diproses lebih lanjut.
+
+## AI Diclosure
+
+Pada proses pengerjaan Tugas 8, saya tidak menggunakan AI dalam proses pengerjaannya dengan rincian proses serta problem solving sebagai berikut
+
+### Proses Pengerjaan dan Problem Solving
+
+Dalam pengerjaan Individual Assignment 8, saya membagi implementasi menjadi beberapa tahapan agar pengembangan fitur lebih terstruktur.
+
+#### 1. Analisis Model dan Penentuan Field Form
+
+Langkah pertama adalah mempelajari model `Experience` yang sebelumnya telah dibuat pada proyek Django. Tujuannya adalah memastikan field pada Flutter Form sesuai dengan struktur data yang sudah tersedia di backend.
+
+Berdasarkan model tersebut, saya memilih empat field untuk formulir Experience, yaitu:
+- **Title**: nama pengalaman, wajib diisi dengan batas maksimal 255 karakter.
+- **Description**: deskripsi pengalaman, wajib diisi.
+- **Category**: kategori pengalaman yang dipilih melalui dropdown.
+- **Thumbnail**: URL gambar pengalaman yang bersifat opsional.
+
+Saya tidak memasukkan field `started_at` karena nilainya dibuat secara otomatis oleh Django (`auto_now_add`), sedangkan `ended_at` tidak termasuk dalam field pada `ExperienceForm` Django.
+
+#### 2. Implementasi Experience Form
+
+Setelah menentukan field, saya membuat file `experience_form.dart` di dalam direktori `lib/screens/`.
+
+Form dibuat menggunakan `StatefulWidget`, `Form`, dan `GlobalKey<FormState>`. Setiap input dilengkapi dengan validator sesuai kebutuhan, seperti memeriksa input kosong, input yang hanya berisi spasi, batas panjang Title, serta format URL Thumbnail.
+
+Untuk field Category, saya menggunakan `DropdownButtonFormField` dengan pilihan kategori yang disesuaikan dengan `EXPERIENCE_CHOICES` pada model Django.
+
+#### 3. Integrasi Navigasi dari Home dan Drawer
+
+Selanjutnya, saya mengintegrasikan Experience Form dengan navigasi aplikasi.
+
+Pada halaman Home, saya menambahkan kartu aksi **Add Experience** yang menggunakan `Navigator.push()` untuk membuka halaman formulir.
+
+Saya juga menambahkan opsi **Add Experience** pada `LeftDrawer` menggunakan `Navigator.pushReplacement()`. Dengan demikian, pengguna dapat mengakses formulir melalui dua jalur navigasi, yaitu kartu aksi pada Home dan Drawer.
+
+Opsi Home pada Drawer juga menggunakan `Navigator.pushReplacement()` agar pengguna dapat kembali ke halaman utama.
+
+#### 4. Penanganan Masalah Reset Form
+
+Selama pengujian, saya menemukan bahwa setelah pengguna mengisi formulir dan menekan tombol OK pada AlertDialog, seluruh data input masih tertinggal pada halaman Experience Form.
+
+Setelah membandingkan implementasinya dengan `ProjectFormPage`, saya menemukan bahwa fungsi tombol OK pada Experience Form hanya menutup dialog menggunakan `Navigator.pop(context)`, tanpa melakukan reset terhadap input.
+
+Untuk mengatasi masalah tersebut, saya menambahkan:
+- `_formKey.currentState!.reset()` untuk mereset seluruh field pada Form.
+- `setState()` untuk mengembalikan variabel input ke nilai awal.
+- Pengembalian kategori ke nilai default `organization`.
+
+Dengan perbaikan tersebut, setelah dialog ditutup, formulir kembali ke kondisi awal dan dapat digunakan untuk memasukkan pengalaman baru.
+
+#### 5. Pengujian Fungsionalitas
+
+Tahap terakhir adalah menguji berbagai alur penggunaan aplikasi, meliputi:
+- Membuka Experience Form melalui kartu aksi Home.
+- Membuka Experience Form melalui Drawer.
+- Memastikan validasi menolak input wajib yang kosong atau hanya berisi spasi.
+- Memastikan URL Thumbnail yang tidak valid ditolak.
+- Memastikan input yang valid menghasilkan AlertDialog berisi ringkasan seluruh data.
+- Memastikan tombol OK menutup dialog dan mereset formulir.
+- Memastikan navigasi kembali ke Home berjalan dengan baik.
+
+Melalui tahapan tersebut, saya dapat mengidentifikasi dan memperbaiki permasalahan selama implementasi sehingga fitur Experience Form dapat digunakan sesuai kebutuhan tugas.
