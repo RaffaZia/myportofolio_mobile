@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
 import 'package:myportofolio_mobile/screens/experience_form.dart';
+import 'package:myportofolio_mobile/screens/experience_list_screen.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
 
 class ItemCard extends StatelessWidget {
   final ItemHomepage item;
@@ -13,37 +18,127 @@ class ItemCard extends StatelessWidget {
     const navy = Color(0xFF384959);
 
     return Material(
-      // Background color berbeda untuk setiap ItemCard
       color: item.color,
       borderRadius: BorderRadius.circular(16),
       elevation: 1,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text('Kamu telah menekan tombol ${item.name}!'),
-                backgroundColor: navy,
-                behavior: SnackBarBehavior.floating,
+        onTap: () async {
+          // View Portofolio: dapat diakses tanpa login.
+          if (item.name == "View Portofolio") {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text('Kamu telah menekan tombol ${item.name}!'),
+                  backgroundColor: navy,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ExperienceListScreen(),
               ),
             );
+            return;
+          }
 
+          // Add Project: hanya dapat diakses setelah login.
           if (item.name == "Add Portofolio Item") {
+            final allowed = await ensureLoggedIn(context);
+
+            if (!allowed || !context.mounted) return;
+
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text('Kamu telah menekan tombol ${item.name}!'),
+                  backgroundColor: navy,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const ProjectFormPage()),
             );
+            return;
           }
 
+          // Add Experience: hanya dapat diakses setelah login.
           if (item.name == "Add Experience") {
+            final allowed = await ensureLoggedIn(context);
+
+            if (!allowed || !context.mounted) return;
+
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text('Kamu telah menekan tombol ${item.name}!'),
+                  backgroundColor: navy,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => const ExperienceFormPage(),
               ),
             );
+            return;
+          }
+
+          // Logout: mengakhiri sesi pengguna.
+          if (item.name == "Logout") {
+            final authState = context.read<AuthState>();
+
+            if (!authState.isLoggedIn) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Kamu belum login. Silakan login melalui menu navigasi.',
+                    ),
+                    backgroundColor: navy,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              return;
+            }
+
+            try {
+              await authState.logout();
+
+              if (!context.mounted) return;
+
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('Berhasil logout!'),
+                    backgroundColor: navy,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+            } catch (error) {
+              if (!context.mounted) return;
+
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('Logout gagal. Silakan coba lagi.'),
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+            }
           }
         },
         child: Padding(

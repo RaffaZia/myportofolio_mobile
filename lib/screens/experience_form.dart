@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
+import 'package:myportofolio_mobile/services/api_client.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
 
 class ExperienceFormPage extends StatefulWidget {
   const ExperienceFormPage({super.key});
@@ -15,6 +20,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
   String _description = '';
   String _category = 'organization';
   String _thumbnail = '';
+  bool _isSubmitting = false;
 
   final List<Map<String, String>> _categories = [
     {'value': 'organization', 'label': 'Organization'},
@@ -39,6 +45,88 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
     }
 
     return null;
+  }
+
+  Future<void> _submit() async {
+    // Validasi seluruh input form.
+    if (!_formKey.currentState!.validate()) return;
+
+    // Pastikan pengguna sudah login.
+    final allowed = await ensureLoggedIn(context);
+
+    if (!allowed || !mounted) return;
+
+    final authState = context.read<AuthState>();
+    final token = authState.token;
+
+    if (token == null) return;
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      // Kirim data Experience ke Django.
+      await context.read<ApiClient>().createExperience(
+        title: _title,
+        description: _description,
+        category: _category,
+        thumbnail: _thumbnail.isEmpty ? null : _thumbnail,
+        token: token,
+      );
+
+      if (!mounted) return;
+
+      // Tampilkan dialog setelah server berhasil menyimpan data.
+      _showSummaryDialog();
+    } on ApiException catch (error) {
+      if (!mounted) return;
+
+      if (error.statusCode == 401) {
+        // Token tidak valid atau sudah tidak berlaku.
+        await authState.logout();
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Sesi berakhir. Silakan login kembali.'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+
+        // Minta pengguna login kembali.
+        await ensureLoggedIn(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Gagal menyimpan Experience. '
+              'Status code: ${error.statusCode}',
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (error) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Terjadi kesalahan. Silakan coba lagi.'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
   void _showSummaryDialog() {
@@ -195,7 +283,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
 
               // Category
               DropdownButtonFormField<String>(
-                value: _category,
+                initialValue: _category,
                 decoration: const InputDecoration(
                   labelText: 'Category',
                   border: OutlineInputBorder(),
@@ -244,13 +332,18 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _showSummaryDialog();
-                    }
-                  },
-                  icon: const Icon(Icons.save_outlined),
-                  label: const Text('Save Experience'),
+                  onPressed: _isSubmitting ? null : _submit,
+                  icon: _isSubmitting
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.save_outlined),
+                  label: Text(_isSubmitting ? 'Saving...' : 'Save Experience'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: navy,
                     foregroundColor: Colors.white,
